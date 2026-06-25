@@ -34,26 +34,33 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
+    console.log("[Login] Form submitted:", form);
     try {
+      console.log("[Login] Sending POST /auth/login...");
       const res = await api.post("/auth/login", form);
+      console.log("[Login] Response received:", res.data);
+
       if (res.data.success) {
-        // Simpan token di localStorage
+        console.log("[Login] Success! Saving token to localStorage...");
         localStorage.setItem("accessToken", res.data.data.accessToken);
         
-        // Simpan token di cookie agar middleware Next.js bisa mendeteksi status login
+        console.log("[Login] Setting token cookie...");
         const isSecure = window.location.protocol === 'https:';
         document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 
-        // Ambil role dari response (ADMIN atau CUSTOMER)
         const role = res.data.data.user.role.toLowerCase();
+        console.log(`[Login] Role: ${role}, redirecting to /${role}/dashboard...`);
         
-        // Redirect ke dashboard masing-masing
         router.push(`/${role}/dashboard`);
+        console.log("[Login] router.push executed.");
+      } else {
+        console.log("[Login] API returned success: false");
       }
     } catch (err: any) {
+      console.error("[Login] Error caught:", err);
       setError(err.response?.data?.message || "Email atau password salah");
     } finally {
+      console.log("[Login] Finally block reached, setting isLoading to false.");
       setIsLoading(false);
     }
   }
