@@ -45,9 +45,10 @@ api.interceptors.response.use(
         const res = await axios.post(`${baseURL}/auth/refresh`, {}, { withCredentials: true });
 
         if (res.data.success && res.data.data.accessToken) {
-          // Update token baru di localStorage
+          // Update token baru di localStorage & cookie
           if (typeof window !== 'undefined') {
             localStorage.setItem('accessToken', res.data.data.accessToken);
+            document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
           }
 
           // Retry request yang gagal dengan token baru
@@ -58,8 +59,7 @@ api.interceptors.response.use(
         // Refresh token gagal/expired -> paksa logout
         if (typeof window !== 'undefined') {
           localStorage.removeItem('accessToken');
-          // Optional: Redirect ke halaman login jika butuh
-          // window.location.href = '/auth/login';
+          document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         }
         return Promise.reject(refreshError);
       }

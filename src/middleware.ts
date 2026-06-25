@@ -20,18 +20,18 @@ function decodeJwt(token: string): any {
 }
 
 export function middleware(req: NextRequest) {
-  // Ambil HttpOnly cookie yang diset oleh backend Express
-  const refreshToken = req.cookies.get("refreshToken")?.value;
+  // Ambil token dari cookie domain frontend
+  const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
   // Jika tidak ada token (belum login)
-  if (!refreshToken) {
+  if (!token) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
   try {
     // Decode token untuk mendapatkan role
-    const decoded = decodeJwt(refreshToken);
+    const decoded = decodeJwt(token);
 
     if (!decoded) {
       return NextResponse.redirect(new URL("/auth/signin", req.url));

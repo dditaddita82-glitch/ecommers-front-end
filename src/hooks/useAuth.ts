@@ -24,6 +24,7 @@ export function useAuth() {
       })
       .catch(() => {
         localStorage.removeItem("accessToken");
+        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         setStatus("unauthenticated");
       });
   }, []);
@@ -35,6 +36,7 @@ export function useAuth() {
       // Abaikan error saat logout
     } finally {
       localStorage.removeItem("accessToken");
+      document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       window.location.href = "/auth/signin";
     }
   };
