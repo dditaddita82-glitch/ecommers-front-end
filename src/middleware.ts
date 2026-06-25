@@ -20,12 +20,14 @@ function decodeJwt(token: string): any {
 }
 
 export function middleware(req: NextRequest) {
-  // Ambil token dari cookie domain frontend
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
+  console.log(`[Middleware] Path: ${pathname}, HasToken: ${!!token}`);
+
   // Jika tidak ada token (belum login)
   if (!token) {
+    console.log(`[Middleware] Redirecting to /auth/signin: Token missing`);
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
@@ -34,19 +36,24 @@ export function middleware(req: NextRequest) {
     const decoded = decodeJwt(token);
 
     if (!decoded) {
+      console.log(`[Middleware] Redirecting to /auth/signin: Decode failed`);
       return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
 
+    console.log(`[Middleware] Decoded user:`, decoded);
+
     // Proteksi route /admin hanya untuk role ADMIN
     if (pathname.startsWith("/admin") && decoded.role !== "ADMIN") {
+      console.log(`[Middleware] Redirecting to /customer/dashboard: User is not ADMIN`);
       return NextResponse.redirect(new URL("/customer/dashboard", req.url));
     }
 
-  } catch (err) {
-    // Jika token tidak valid / corrupt
+  } catch (err: any) {
+    console.log(`[Middleware] Redirecting to /auth/signin: Error`, err?.message || err);
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
+  console.log(`[Middleware] Allowing request to ${pathname}`);
   return NextResponse.next();
 }
 
