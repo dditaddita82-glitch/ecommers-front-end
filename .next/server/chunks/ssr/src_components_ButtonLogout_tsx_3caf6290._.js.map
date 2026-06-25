@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/hp/Downloads/project-ecommerce%20%281%29/project-ecommerce/front-end/src/components/ButtonLogout.tsx"],"sourcesContent":["\"use client\";\r\n\r\nimport { useAuth } from \"@/hooks/useAuth\";\r\n\r\nexport default function LogoutButton() {\r\n  const { signOut } = useAuth();\r\n\r\n  return (\r\n    <button\r\n      onClick={() => signOut()}\r\n      className=\"rounded bg-red-500 px-4 py-2 text-white\"\r\n    >\r\n      Logout\r\n    </button>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAIe,SAAS;IACtB,MAAM,EAAE,OAAO,EAAE,GAAG,IAAA,kIAAO;IAE3B,qBACE,8OAAC;QACC,SAAS,IAAM;QACf,WAAU;kBACX;;;;;;AAIL","debugId":null}}]
-}
