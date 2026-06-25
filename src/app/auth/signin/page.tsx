@@ -19,7 +19,8 @@ export default function LoginPage() {
       api.get("/auth/me").then((res) => {
         if (res.data.success) {
           const role = res.data.data.role.toLowerCase();
-          document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
+          const isSecure = window.location.protocol === 'https:';
+          document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
           router.push(`/${role}/dashboard`);
         }
       }).catch(() => {
@@ -41,7 +42,8 @@ export default function LoginPage() {
         localStorage.setItem("accessToken", res.data.data.accessToken);
         
         // Simpan token di cookie agar middleware Next.js bisa mendeteksi status login
-        document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
+        const isSecure = window.location.protocol === 'https:';
+        document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 
         // Ambil role dari response (ADMIN atau CUSTOMER)
         const role = res.data.data.user.role.toLowerCase();

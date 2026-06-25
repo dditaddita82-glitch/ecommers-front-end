@@ -48,7 +48,8 @@ api.interceptors.response.use(
           // Update token baru di localStorage & cookie
           if (typeof window !== 'undefined') {
             localStorage.setItem('accessToken', res.data.data.accessToken);
-            document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `token=${res.data.data.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
           }
 
           // Retry request yang gagal dengan token baru
